@@ -1,0 +1,20 @@
+
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  date TEXT,
+  type TEXT,
+  comment TEXT,
+  promo TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  text TEXT NOT NULL,
+  stars INTEGER NOT NULL DEFAULT 5,
+  created_at TIMESTAMP DEFAULT NOW()
+);

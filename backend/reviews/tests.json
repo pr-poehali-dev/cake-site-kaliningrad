@@ -1,0 +1,11 @@
+{
+  "tests": [
+    {
+      "name": "Получить отзывы",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    }
+  ]
+}

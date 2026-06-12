@@ -60,6 +60,9 @@ const navItems = [
   { label: "Контакты", href: "#contacts" },
 ];
 
+const ORDERS_URL = "https://functions.poehali.dev/657ce97d-c9a3-494e-ac00-38311c63a47e";
+const REVIEWS_URL = "https://functions.poehali.dev/f390fd27-baad-4ac7-8dc8-a9eeae8be2bb";
+
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
@@ -67,24 +70,63 @@ export default function Index() {
   const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
   const [submitted, setSubmitted] = useState(false);
   const [userReviews, setUserReviews] = useState<{name: string; text: string; stars: number}[]>([]);
-  const [reviewForm, setReviewForm] = useState({ name: "", text: "", stars: 5 });
+  const [reviewForm, setReviewForm] = useState({ name: "", phone: "", text: "", stars: 5 });
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+  const [reviewLoading, setReviewLoading] = useState(false);
 
-  const handleReviewSubmit = (e: React.FormEvent) => {
+  const loadReviews = async () => {
+    try {
+      const res = await fetch(REVIEWS_URL);
+      const data = await res.json();
+      if (Array.isArray(data)) setUserReviews(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useState(() => { loadReviews(); });
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
-    setUserReviews(prev => [{ ...reviewForm }, ...prev]);
-    setReviewForm({ name: "", text: "", stars: 5 });
-    setReviewSubmitted(true);
-    setTimeout(() => setReviewSubmitted(false), 3000);
+    setReviewError("");
+    setReviewLoading(true);
+    try {
+      const res = await fetch(REVIEWS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reviewForm),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setReviewError(data.error || "Ошибка");
+      } else {
+        setReviewForm({ name: "", phone: "", text: "", stars: 5 });
+        setReviewSubmitted(true);
+        loadReviews();
+      }
+    } catch (e) {
+      console.error(e);
+      setReviewError("Ошибка сети, попробуйте позже");
+    }
+    setReviewLoading(false);
   };
 
   const VALID_PROMO = "ЗЕФИРНОЕ ЛЕТО";
   const promoValid = form.promo.trim() === VALID_PROMO;
   const promoEntered = form.promo.trim().length > 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await fetch(ORDERS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } catch (e) {
+      console.error(e);
+    }
     setSubmitted(true);
   };
 
@@ -408,7 +450,8 @@ export default function Index() {
           {/* REVIEW FORM */}
           <div className="max-w-2xl mx-auto bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border border-pink-100">
             <h3 className="font-display text-2xl font-bold mb-2 text-center">Оставить отзыв</h3>
-            <p className="text-gray-400 text-sm text-center mb-6">Поделитесь впечатлениями — это важно для нас!</p>
+            <p className="text-gray-400 text-sm text-center mb-1">Поделитесь впечатлениями — это важно для нас!</p>
+            <p className="text-gray-400 text-xs text-center mb-6">Отзыв могут оставить только клиенты, оформившие заказ</p>
             {reviewSubmitted ? (
               <div className="text-center py-4">
                 <div className="text-4xl mb-2">🙏</div>
@@ -416,16 +459,29 @@ export default function Index() {
               </div>
             ) : (
               <form onSubmit={handleReviewSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ваше имя</label>
-                  <input
-                    type="text"
-                    required
-                    value={reviewForm.name}
-                    onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })}
-                    placeholder="Как вас зовут?"
-                    className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Ваше имя</label>
+                    <input
+                      type="text"
+                      required
+                      value={reviewForm.name}
+                      onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })}
+                      placeholder="Как вас зовут?"
+                      className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Телефон из заказа</label>
+                    <input
+                      type="tel"
+                      required
+                      value={reviewForm.phone}
+                      onChange={e => setReviewForm({ ...reviewForm, phone: e.target.value })}
+                      placeholder="+7 (___) ___-__-__"
+                      className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Оценка</label>
@@ -451,11 +507,15 @@ export default function Index() {
                     className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 resize-none"
                   />
                 </div>
+                {reviewError && (
+                  <p className="text-red-500 text-sm text-center">❌ {reviewError}</p>
+                )}
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200"
+                  disabled={reviewLoading}
+                  className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200 disabled:opacity-60"
                 >
-                  Отправить отзыв
+                  {reviewLoading ? "Отправляем..." : "Отправить отзыв"}
                 </button>
               </form>
             )}
