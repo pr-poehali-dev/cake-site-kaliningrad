@@ -172,8 +172,8 @@ export default function Index() {
             <div className="relative w-full max-w-md">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-300 to-orange-300 rounded-3xl blur-2xl opacity-30 scale-105" />
               <img
-                src={TORT_IMG}
-                alt="Авторский торт"
+                src="https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg"
+                alt="Елена Никитина — кондитер"
                 className="relative w-full h-[520px] object-cover rounded-3xl shadow-2xl"
               />
               <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl p-4 shadow-xl border border-pink-50">
@@ -184,10 +184,6 @@ export default function Index() {
                     <div className="text-xs text-gray-400">200+ отзывов</div>
                   </div>
                 </div>
-              </div>
-              <div className="absolute -top-4 -right-4 bg-gradient-to-br from-pink-500 to-orange-400 text-white rounded-2xl p-4 shadow-xl">
-                <div className="font-bold text-lg">от 2 500 ₽</div>
-                <div className="text-xs opacity-80">торт на заказ</div>
               </div>
             </div>
           </div>
