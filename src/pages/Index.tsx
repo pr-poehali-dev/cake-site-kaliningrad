@@ -1,24 +1,25 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
-const CAKE_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/files/d03fdf45-ca23-4c0f-aa9a-a8954c40080f.jpg";
-const SWEETS_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/files/17f3d401-8bbf-478b-9188-a6d9dac7e70a.jpg";
-const CHEF_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/files/851d5d27-e875-4964-90f5-462a2427d407.jpg";
+const CHEF_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/3ad6f483-671f-4031-bac3-5d4339ac9a35.jpg";
+const ZEFIR_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/f1283524-b4f5-47bf-9adc-7260bab4c2a4.jpg";
+const TORT_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/08e21a28-173c-4775-bccf-9f393db37c16.jpg";
+const TORT1_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/caef53f9-cc63-4ec9-8ef5-30b791b0cce5.jpg";
 
 const catalog = [
   { id: 1, name: "Торт на заказ", price: "от 2 500 ₽/кг", emoji: "🎂", tag: "Хит", desc: "Многоярусные, свадебные, детские — любой сложности и тематики" },
   { id: 2, name: "Капкейки", price: "от 120 ₽/шт", emoji: "🧁", tag: "Популярно", desc: "Нежное тесто, пышный крем — идеальны для праздничных наборов" },
-  { id: 3, name: "Макаруны", price: "от 90 ₽/шт", emoji: "🍬", tag: "Новинка", desc: "Французские пирожные с натуральными начинками 20+ вкусов" },
+  { id: 3, name: "Зефир", price: "от 80 ₽/шт", emoji: "🌸", tag: "Новинка", desc: "Нежный домашний зефир — букеты и наборы для подарков" },
   { id: 4, name: "Медовик", price: "от 1 800 ₽", emoji: "🍯", tag: "", desc: "Классический медовый торт с нежным сметанным кремом" },
   { id: 5, name: "Трюфели", price: "от 80 ₽/шт", emoji: "🍫", tag: "", desc: "Бельгийский шоколад, насыщенная начинка, ручная лепка" },
   { id: 6, name: "Торт-цифра", price: "от 2 200 ₽", emoji: "🔢", tag: "Тренд", desc: "Стильный торт в форме цифры с живыми цветами и декором" },
 ];
 
 const portfolio = [
-  { id: 1, img: CAKE_IMG, title: "Свадебный торт 3 яруса", desc: "Флористический декор, живые цветы" },
-  { id: 2, img: SWEETS_IMG, title: "Праздничный набор", desc: "Макаруны + капкейки для корпоратива" },
-  { id: 3, img: CAKE_IMG, title: "Детский торт «Единорог»", desc: "Мастика, леденцы, радужные цвета" },
-  { id: 4, img: SWEETS_IMG, title: "Ассорти трюфелей", desc: "Подарочный набор на 50 штук" },
+  { id: 1, img: CHEF_IMG, title: "Свадебный торт 6 ярусов", desc: "Мастика, живые цветы, ручная лепка" },
+  { id: 2, img: ZEFIR_IMG, title: "Букет из зефира", desc: "Нежный подарок на любой повод" },
+  { id: 3, img: TORT_IMG, title: "Торт с ягодами", desc: "Шоколадный дриппинг, клубника, голубика" },
+  { id: 4, img: TORT1_IMG, title: "Именинный торт", desc: "Авторское оформление с надписью" },
 ];
 
 const services = [
@@ -171,7 +172,7 @@ export default function Index() {
             <div className="relative w-full max-w-md">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-300 to-orange-300 rounded-3xl blur-2xl opacity-30 scale-105" />
               <img
-                src={CAKE_IMG}
+                src={TORT_IMG}
                 alt="Авторский торт"
                 className="relative w-full h-[520px] object-cover rounded-3xl shadow-2xl"
               />
