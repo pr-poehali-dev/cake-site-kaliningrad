@@ -66,6 +66,18 @@ export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [userReviews, setUserReviews] = useState<{name: string; text: string; stars: number}[]>([]);
+  const [reviewForm, setReviewForm] = useState({ name: "", text: "", stars: 5 });
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+  const handleReviewSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
+    setUserReviews(prev => [{ ...reviewForm }, ...prev]);
+    setReviewForm({ name: "", text: "", stars: 5 });
+    setReviewSubmitted(true);
+    setTimeout(() => setReviewSubmitted(false), 3000);
+  };
 
   const VALID_PROMO = "ЗЕФИРНОЕ ЛЕТО";
   const promoValid = form.promo.trim() === VALID_PROMO;
@@ -374,8 +386,8 @@ export default function Index() {
             <h2 className="font-display text-4xl lg:text-5xl font-black">Говорят клиенты</h2>
             <p className="mt-4 text-gray-400 text-lg max-w-xl mx-auto">Более 200 довольных клиентов по всему Калининграду</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reviews.map((r, i) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[...userReviews, ...reviews].map((r, i) => (
               <div key={i} className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-6 border border-pink-100">
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: r.stars }).map((_, j) => (
@@ -391,6 +403,62 @@ export default function Index() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* REVIEW FORM */}
+          <div className="max-w-2xl mx-auto bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border border-pink-100">
+            <h3 className="font-display text-2xl font-bold mb-2 text-center">Оставить отзыв</h3>
+            <p className="text-gray-400 text-sm text-center mb-6">Поделитесь впечатлениями — это важно для нас!</p>
+            {reviewSubmitted ? (
+              <div className="text-center py-4">
+                <div className="text-4xl mb-2">🙏</div>
+                <p className="font-bold text-gray-800">Спасибо за отзыв!</p>
+              </div>
+            ) : (
+              <form onSubmit={handleReviewSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ваше имя</label>
+                  <input
+                    type="text"
+                    required
+                    value={reviewForm.name}
+                    onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })}
+                    placeholder="Как вас зовут?"
+                    className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Оценка</label>
+                  <div className="flex gap-2">
+                    {[1,2,3,4,5].map(star => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewForm({ ...reviewForm, stars: star })}
+                        className={`text-3xl transition-transform hover:scale-110 ${star <= reviewForm.stars ? 'text-orange-400' : 'text-gray-200'}`}
+                      >★</button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ваш отзыв</label>
+                  <textarea
+                    required
+                    value={reviewForm.text}
+                    onChange={e => setReviewForm({ ...reviewForm, text: e.target.value })}
+                    placeholder="Расскажите о вашем заказе..."
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 resize-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200"
+                >
+                  Отправить отзыв
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>
