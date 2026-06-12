@@ -241,10 +241,20 @@ export default function Index() {
             <p className="mt-4 text-gray-400 text-lg max-w-xl mx-auto">Каждый заказ — отдельная история и особый повод</p>
           </div>
           {/* VIDEO REELS */}
-          <div className="mb-10 flex justify-center">
-            <div className="relative w-[320px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white" style={{aspectRatio: '9/16'}}>
+          <div className="mb-10 flex justify-center gap-6 flex-wrap">
+            <div className="relative w-[280px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white" style={{aspectRatio: '9/16'}}>
               <iframe
                 src="https://vk.com/video_ext.php?oid=157357002&id=456239081&hd=2"
+                width="100%"
+                height="100%"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+            <div className="relative w-[280px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white" style={{aspectRatio: '9/16'}}>
+              <iframe
+                src="https://vk.com/video_ext.php?oid=157357002&id=456239157&hd=2"
                 width="100%"
                 height="100%"
                 allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
