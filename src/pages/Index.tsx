@@ -124,7 +124,7 @@ export default function Index() {
         <div className="relative max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center py-20">
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-semibold mb-6">
-              <span>🍰</span> Кондитер из Калининграда
+              <span>🍰</span> Волшебное лакомство из Калининграда
             </div>
             <h1 className="font-display text-5xl lg:text-7xl font-black leading-tight mb-6">
               Торты и{" "}
