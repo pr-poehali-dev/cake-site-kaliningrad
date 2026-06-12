@@ -240,13 +240,13 @@ export default function Index() {
             <h2 className="font-display text-4xl lg:text-5xl font-black">Готовые работы</h2>
             <p className="mt-4 text-gray-400 text-lg max-w-xl mx-auto">Каждый заказ — отдельная история и особый повод</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {portfolio.map((item) => (
-              <div key={item.id} className="group relative overflow-hidden rounded-3xl cursor-pointer">
+              <div key={item.id} className="group relative overflow-hidden rounded-2xl cursor-pointer">
                 <img
                   src={item.img}
                   alt={item.title}
-                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
                   <h3 className="text-white font-bold text-sm">{item.title}</h3>
