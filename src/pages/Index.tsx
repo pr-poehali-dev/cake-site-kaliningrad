@@ -64,7 +64,7 @@ export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "" });
+  const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -568,6 +568,16 @@ export default function Index() {
                       className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 resize-none"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Промокод</label>
+                    <input
+                      type="text"
+                      value={form.promo}
+                      onChange={e => setForm({ ...form, promo: e.target.value.toUpperCase() })}
+                      placeholder="Введите промокод (если есть)"
+                      className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 tracking-widest font-mono"
+                    />
+                  </div>
                   <button
                     type="submit"
                     className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200"
@@ -688,6 +698,16 @@ export default function Index() {
                       placeholder="Тематика, цвет, надпись, количество порций, аллергии..."
                       rows={3}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 resize-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Промокод</label>
+                    <input
+                      type="text"
+                      value={form.promo}
+                      onChange={e => setForm({ ...form, promo: e.target.value.toUpperCase() })}
+                      placeholder="Введите промокод (если есть)"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 tracking-widest font-mono"
                     />
                   </div>
                   <button
