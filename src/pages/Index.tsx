@@ -502,6 +502,21 @@ export default function Index() {
                 </div>
                 <Icon name="ChevronRight" size={18} className="ml-auto text-gray-300 group-hover:text-blue-500" />
               </a>
+              <a
+                href="https://www.instagram.com/dessert_nikitina"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-pink-50 to-orange-50 border border-pink-100 hover:border-pink-300 hover:shadow-md transition-all group"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 via-rose-500 to-orange-400 flex items-center justify-center">
+                  <Icon name="Instagram" size={22} className="text-white" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 font-medium mb-0.5">Instagram</div>
+                  <div className="font-bold text-gray-800 group-hover:text-pink-600 transition-colors">@dessert_nikitina</div>
+                </div>
+                <Icon name="ChevronRight" size={18} className="ml-auto text-gray-300 group-hover:text-pink-400" />
+              </a>
               <div className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
                   <Icon name="MapPin" size={22} className="text-white" />
@@ -582,6 +597,8 @@ export default function Index() {
             <a href="https://t.me/dessert_nikitina" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">Telegram</a>
             <span className="text-gray-700">·</span>
             <a href="https://vk.com/id157357002" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">ВКонтакте</a>
+            <span className="text-gray-700">·</span>
+            <a href="https://www.instagram.com/dessert_nikitina" className="text-gray-400 hover:text-pink-400 transition-colors text-sm">Instagram</a>
           </div>
           <p className="text-gray-600 text-xs mt-8">© 2024 Елена Никитина. Все права защищены.</p>
         </div>
