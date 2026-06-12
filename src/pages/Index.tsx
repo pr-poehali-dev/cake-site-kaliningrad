@@ -67,6 +67,10 @@ export default function Index() {
   const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
   const [submitted, setSubmitted] = useState(false);
 
+  const VALID_PROMO = "ЗЕФИРНОЕ ЛЕТО";
+  const promoValid = form.promo.trim() === VALID_PROMO;
+  const promoEntered = form.promo.trim().length > 0;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
@@ -575,8 +579,14 @@ export default function Index() {
                       value={form.promo}
                       onChange={e => setForm({ ...form, promo: e.target.value.toUpperCase() })}
                       placeholder="Введите промокод (если есть)"
-                      className="w-full px-4 py-3 rounded-xl border border-pink-200 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 tracking-widest font-mono"
+                      className={`w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-gray-800 tracking-widest font-mono transition-all ${promoEntered ? promoValid ? 'border-green-400 focus:ring-green-300' : 'border-red-300 focus:ring-red-200' : 'border-pink-200 focus:ring-pink-300'}`}
                     />
+                    {promoEntered && promoValid && (
+                      <p className="mt-1.5 text-green-600 text-sm font-semibold flex items-center gap-1">🎉 Промокод применён — скидка 15%!</p>
+                    )}
+                    {promoEntered && !promoValid && (
+                      <p className="mt-1.5 text-red-400 text-sm flex items-center gap-1">❌ Промокод не найден</p>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -707,8 +717,14 @@ export default function Index() {
                       value={form.promo}
                       onChange={e => setForm({ ...form, promo: e.target.value.toUpperCase() })}
                       placeholder="Введите промокод (если есть)"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 tracking-widest font-mono"
+                      className={`w-full px-4 py-3 rounded-xl border bg-white focus:outline-none focus:ring-2 text-gray-800 tracking-widest font-mono transition-all ${promoEntered ? promoValid ? 'border-green-400 focus:ring-green-300' : 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-pink-300'}`}
                     />
+                    {promoEntered && promoValid && (
+                      <p className="mt-1.5 text-green-600 text-sm font-semibold flex items-center gap-1">🎉 Промокод применён — скидка 15%!</p>
+                    )}
+                    {promoEntered && !promoValid && (
+                      <p className="mt-1.5 text-red-400 text-sm flex items-center gap-1">❌ Промокод не найден</p>
+                    )}
                   </div>
                   <button
                     type="submit"
