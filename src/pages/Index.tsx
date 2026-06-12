@@ -23,6 +23,7 @@ const portfolio = [
   { id: 2, img: ZEFIR_IMG, title: "Букет из зефира", desc: "Нежный подарок на любой повод" },
   { id: 3, img: TORT_IMG, title: "Торт с ягодами", desc: "Шоколадный дриппинг, клубника, голубика" },
   { id: 4, img: TORT1_IMG, title: "Именинный торт", desc: "Авторское оформление с надписью" },
+  { id: 5, img: "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/aa359a14-205e-424c-9785-124e72edaa48.jpg", title: "Меринговый рулет", desc: "С ягодами и нежным кремом" },
 ];
 
 const services = [
