@@ -16,7 +16,7 @@ const catalog = [
 ];
 
 const portfolio = [
-  { id: 1, img: CHEF_IMG, title: "Свадебный торт 6 ярусов", desc: "Мастика, живые цветы, ручная лепка" },
+  { id: 1, img: "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg", title: "Свадебный торт 6 ярусов", desc: "Мастика, живые цветы, ручная лепка" },
   { id: 2, img: ZEFIR_IMG, title: "Букет из зефира", desc: "Нежный подарок на любой повод" },
   { id: 3, img: TORT_IMG, title: "Торт с ягодами", desc: "Шоколадный дриппинг, клубника, голубика" },
   { id: 4, img: TORT1_IMG, title: "Именинный торт", desc: "Авторское оформление с надписью" },
