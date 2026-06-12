@@ -240,6 +240,18 @@ export default function Index() {
             <h2 className="font-display text-4xl lg:text-5xl font-black">Готовые работы</h2>
             <p className="mt-4 text-gray-400 text-lg max-w-xl mx-auto">Каждый заказ — отдельная история и особый повод</p>
           </div>
+          {/* VIDEO */}
+          <div className="mb-10 rounded-3xl overflow-hidden shadow-xl">
+            <iframe
+              src="https://vk.com/video_ext.php?oid=157357002&id=456239081&hd=2"
+              width="100%"
+              height="480"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+              allowFullScreen
+              className="w-full rounded-3xl"
+            />
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {portfolio.map((item) => (
               <div key={item.id} className="group relative overflow-hidden rounded-2xl cursor-pointer">
