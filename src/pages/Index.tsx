@@ -693,10 +693,13 @@ export default function Index() {
                       <option value="">Выберите...</option>
                       <option>Торт на заказ</option>
                       <option>Капкейки</option>
-                      <option>Макаруны</option>
+                      <option>Зефир</option>
                       <option>Медовик</option>
                       <option>Трюфели</option>
                       <option>Торт-цифра</option>
+                      <option>Праздничный набор</option>
+                      <option>Свадебный торт</option>
+                      <option>Меринговый рулет</option>
                       <option>Другое</option>
                     </select>
                   </div>
