@@ -60,6 +60,10 @@ const REVIEWS_URL = "https://functions.poehali.dev/f390fd27-baad-4ac7-8dc8-a9eea
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
+  const [orderVisible, setOrderVisible] = useState(false);
+
+  const openOrder = () => { setOrderOpen(true); setTimeout(() => setOrderVisible(true), 10); };
+  const closeOrder = () => { setOrderVisible(false); setTimeout(() => setOrderOpen(false), 300); };
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -148,7 +152,7 @@ export default function Index() {
             ))}
           </div>
           <button
-            onClick={() => setOrderOpen(true)}
+            onClick={() => openOrder()}
             className="hidden lg:inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200"
           >
             <Icon name="ShoppingBag" size={16} />
@@ -166,7 +170,7 @@ export default function Index() {
               </button>
             ))}
             <button
-              onClick={() => { setOrderOpen(true); setMenuOpen(false); }}
+              onClick={() => { openOrder(); setMenuOpen(false); }}
               className="mt-2 w-full py-3 rounded-full font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400"
             >
               Оформить заказ
@@ -198,7 +202,7 @@ export default function Index() {
             </p>
             <div className="flex flex-wrap gap-4">
               <button
-                onClick={() => setOrderOpen(true)}
+                onClick={() => openOrder()}
                 className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-white text-lg bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-xl shadow-pink-300/50"
               >
                 <Icon name="Sparkles" size={20} />
@@ -274,7 +278,7 @@ export default function Index() {
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-pink-600 text-lg">{item.price}</span>
                   <button
-                    onClick={() => setOrderOpen(true)}
+                    onClick={() => openOrder()}
                     className="flex items-center gap-1 px-4 py-2 rounded-full bg-white border-2 border-pink-200 text-pink-600 text-sm font-semibold hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all"
                   >
                     Заказать
@@ -550,7 +554,7 @@ export default function Index() {
               <h2 className="font-display text-3xl lg:text-5xl font-black text-white mb-4">Готовы сделать заказ?</h2>
               <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">Оставьте заявку сейчас и выберите удобную дату доставки. Отвечаю быстро!</p>
               <button
-                onClick={() => setOrderOpen(true)}
+                onClick={() => openOrder()}
                 className="inline-flex items-center gap-2 px-10 py-5 rounded-full font-bold text-pink-600 text-lg bg-white hover:bg-pink-50 transition-all shadow-xl"
               >
                 <Icon name="Sparkles" size={22} />
@@ -770,12 +774,12 @@ export default function Index() {
 
       {/* PREORDER MODAL */}
       {orderOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300 ${orderVisible ? 'bg-black/50' : 'bg-black/0'}`}>
+          <div className={`bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transition-all duration-300 ${orderVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'}`}>
             <div className="bg-gradient-to-r from-pink-500 to-orange-400 p-6 text-white">
               <div className="flex items-center justify-between">
                 <h2 className="font-display text-2xl font-bold">Предзаказ 🎂</h2>
-                <button onClick={() => setOrderOpen(false)} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
+                <button onClick={() => closeOrder()} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
                   <Icon name="X" size={18} />
                 </button>
               </div>
@@ -787,7 +791,7 @@ export default function Index() {
                   <div className="text-5xl mb-4">🎉</div>
                   <h4 className="font-bold text-xl text-gray-800 mb-2">Заявка принята!</h4>
                   <p className="text-gray-500 mb-6">Елена свяжется с вами в ближайшее время</p>
-                  <button onClick={() => { setOrderOpen(false); setSubmitted(false); }} className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400">
+                  <button onClick={() => { closeOrder(); setSubmitted(false); }} className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400">
                     Закрыть
                   </button>
                 </div>
