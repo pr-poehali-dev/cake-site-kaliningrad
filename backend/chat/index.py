@@ -1,11 +1,24 @@
 import json
 import os
 import psycopg2
+import urllib.request
 
 SCHEMA = os.environ.get('MAIN_DB_SCHEMA', 'public')
 
 def get_conn():
     return psycopg2.connect(os.environ['DATABASE_URL'], options=f'-c search_path="{SCHEMA}"')
+
+def send_telegram(text: str):
+    token = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+    chat_id = os.environ.get('TELEGRAM_CHAT_ID', '')
+    if not token or not chat_id:
+        return
+    data = json.dumps({'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML'}).encode()
+    req = urllib.request.Request(
+        f'https://api.telegram.org/bot{token}/sendMessage',
+        data=data, headers={'Content-Type': 'application/json'}
+    )
+    urllib.request.urlopen(req, timeout=5)
 
 def handler(event: dict, context) -> dict:
     """Чат между покупателем и администратором по заявке"""
@@ -43,12 +56,11 @@ def handler(event: dict, context) -> dict:
         body = json.loads(event.get('body') or '{}')
         oid = body.get('orderId')
         text = (body.get('text') or '').strip()
-        sender = body.get('sender', 'client')  # 'client' или 'admin'
+        sender = body.get('sender', 'client')
 
         if not oid or not text:
             return {'statusCode': 400, 'headers': headers, 'body': json.dumps({'error': 'orderId и text обязательны'})}
 
-        # Если пишет admin — проверяем токен
         if sender == 'admin':
             admin_token = (event.get('headers') or {}).get('X-Admin-Token', '')
             if admin_token != os.environ.get('ADMIN_PASSWORD', ''):
@@ -56,6 +68,12 @@ def handler(event: dict, context) -> dict:
 
         conn = get_conn()
         cur = conn.cursor()
+
+        # Получаем имя клиента для уведомления
+        cur.execute("SELECT name FROM orders WHERE id=%s", (oid,))
+        order_row = cur.fetchone()
+        client_name = order_row[0] if order_row else 'Покупатель'
+
         cur.execute(
             "INSERT INTO messages (order_id, sender, text) VALUES (%s, %s, %s) RETURNING id, created_at",
             (oid, sender, text)
@@ -64,6 +82,17 @@ def handler(event: dict, context) -> dict:
         conn.commit()
         cur.close()
         conn.close()
+
+        # Уведомление в Telegram только для сообщений от покупателя
+        if sender == 'client':
+            try:
+                send_telegram(
+                    f'💬 <b>Новое сообщение от {client_name}</b> (заявка #{oid})\n\n{text}\n\n'
+                    f'👉 Ответить: /admin на сайте'
+                )
+            except Exception:
+                pass
+
         return {'statusCode': 200, 'headers': headers,
                 'body': json.dumps({'ok': True, 'id': row[0], 'createdAt': str(row[1])}, ensure_ascii=False)}
 

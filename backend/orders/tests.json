@@ -6,7 +6,7 @@
       "path": "/",
       "body": {"name": "Тест", "phone": "+79001234567", "type": "Торт"},
       "expectedStatus": 200,
-      "expectedBody": {"ok": true},
+      "expectedBody": {"ok": true, "orderId": 0},
       "bodyMatcher": "partial"
     }
   ]
