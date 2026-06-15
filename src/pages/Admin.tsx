@@ -55,7 +55,10 @@ export default function Admin() {
 
   const loadPortfolio = async () => {
     const res = await fetch(PORTFOLIO_URL);
-    if (res.ok) setPortfolioFiles(await res.json());
+    if (res.ok) {
+      const data = await res.json();
+      setPortfolioFiles(data.map((f: {id: number; url: string}) => ({ key: String(f.id), url: f.url })));
+    }
   };
 
   const uploadPortfolioPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,16 +68,29 @@ export default function Admin() {
     const reader = new FileReader();
     reader.onload = async (ev) => {
       const base64 = ev.target?.result as string;
-      await fetch(PORTFOLIO_URL, {
+      const res = await fetch(PORTFOLIO_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Admin-Token": token },
         body: JSON.stringify({ file: base64, name: file.name, title: "Работа" }),
       });
-      await loadPortfolio();
+      if (res.ok) {
+        const data = await res.json();
+        // Добавляем сразу в список без перезагрузки
+        setPortfolioFiles(prev => [{ key: String(data.id), url: data.url }, ...prev]);
+      }
       setPortfolioUploading(false);
     };
     reader.readAsDataURL(file);
     e.target.value = "";
+  };
+
+  const deletePortfolioPhoto = async (id: string) => {
+    await fetch(PORTFOLIO_URL, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", "X-Admin-Token": token },
+      body: JSON.stringify({ id }),
+    });
+    setPortfolioFiles(prev => prev.filter(f => f.key !== id));
   };
 
   const loadMessages = async (orderId: string) => {
@@ -207,6 +223,10 @@ export default function Admin() {
                 {portfolioFiles.map(f => (
                   <div key={f.key} className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-square">
                     <img src={f.url} alt={f.key} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <button
+                      onClick={() => deletePortfolioPhoto(f.key)}
+                      className="absolute top-2 right-2 w-7 h-7 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center shadow-md"
+                    >✕</button>
                   </div>
                 ))}
               </div>
