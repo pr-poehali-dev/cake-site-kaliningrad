@@ -80,6 +80,8 @@ export default function Index() {
   const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "", print: "", kg: "1", qty: "6" });
   const [submitted, setSubmitted] = useState(false);
 
+  const VALID_PROMO = "ЗЕФИРНОЕ ЛЕТО";
+
   const PRICES: Record<string, { base: number; unit: string }> = {
     "Торт на заказ":    { base: 2500, unit: "kg" },
     "Капкейки":         { base: 300,  unit: "qty" },
@@ -192,7 +194,6 @@ export default function Index() {
     document.getElementById(id.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const VALID_PROMO = "ЗЕФИРНОЕ ЛЕТО";
   const promoValid = form.promo.trim() === VALID_PROMO;
   const promoEntered = form.promo.trim().length > 0;
 
