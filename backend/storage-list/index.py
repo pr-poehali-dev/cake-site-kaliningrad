@@ -19,9 +19,10 @@ def handler(event: dict, context) -> dict:
     try:
         # Перебираем все страницы (больше 1000 файлов)
         paginator = s3.get_paginator('list_objects_v2')
-        for page in paginator.paginate(Bucket='portfolio'):
+        for page in paginator.paginate(Bucket='files', Prefix='portfolio/'):
             for obj in page.get('Contents', []):
                 key = obj['Key']
+                # CDN путь: /files/{key} — bucket name не входит в URL
                 url = f"https://cdn.poehali.dev/projects/{key_id}/files/{key}"
                 files.append({'key': key, 'url': url})
     except Exception as e:
