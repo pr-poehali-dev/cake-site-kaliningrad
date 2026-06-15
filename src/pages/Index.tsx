@@ -77,8 +77,41 @@ export default function Index() {
   };
   const closeOrder = () => { setOrderVisible(false); setTimeout(() => setOrderOpen(false), 300); };
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
+  const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "", print: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoUploading, setPhotoUploading] = useState(false);
+
+  const UPLOAD_URL = "https://functions.poehali.dev/13231e85-281a-4c17-8331-d6549790a887";
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const uploadPhoto = async (): Promise<string> => {
+    if (!photoFile || !photoPreview) return "";
+    setPhotoUploading(true);
+    try {
+      const res = await fetch(UPLOAD_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file: photoPreview, name: photoFile.name }),
+      });
+      const data = await res.json();
+      return data.url || "";
+    } catch (e) {
+      console.error(e);
+      return "";
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
   const [userReviews, setUserReviews] = useState<{name: string; text: string; stars: number}[]>([]);
   const [reviewForm, setReviewForm] = useState({ name: "", phone: "", text: "", stars: 5 });
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -133,10 +166,11 @@ export default function Index() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const photoUrl = await uploadPhoto();
       await fetch(ORDERS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, photoUrl }),
       });
     } catch (e) {
       console.error(e);
@@ -803,7 +837,7 @@ export default function Index() {
                   <div className="text-5xl mb-4">🎉</div>
                   <h4 className="font-bold text-xl text-gray-800 mb-2">Заявка принята!</h4>
                   <p className="text-gray-500 mb-6">Елена свяжется с вами в ближайшее время</p>
-                  <button onClick={() => { closeOrder(); setSubmitted(false); setForm(f => ({...f, type: ''})); }} className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400">
+                  <button onClick={() => { closeOrder(); setSubmitted(false); setForm(f => ({...f, type: '', print: ''})); setPhotoFile(null); setPhotoPreview(""); }} className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400">
                     Закрыть
                   </button>
                 </div>
@@ -878,6 +912,47 @@ export default function Index() {
                       <p className="text-xs text-pink-500 font-medium">Выбрано: {form.type}</p>
                     )}
                   </div>
+                  {/* PRINT OPTION */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Фотопечать на торте</label>
+                    <div className="flex gap-3">
+                      {["Без печати", "С фотопечатью"].map(opt => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => { setForm({ ...form, print: opt }); if (opt === 'Без печати') { setPhotoFile(null); setPhotoPreview(""); } }}
+                          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all ${form.print === opt ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300'}`}
+                        >
+                          {opt === 'Без печати' ? '🎂 Без печати' : '🖼️ С фотопечатью'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* PHOTO UPLOAD */}
+                  {form.print === 'С фотопечатью' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Прикрепите фото для печати</label>
+                      {photoPreview ? (
+                        <div className="relative">
+                          <img src={photoPreview} alt="Превью" className="w-full h-40 object-cover rounded-xl border-2 border-pink-200" />
+                          <button
+                            type="button"
+                            onClick={() => { setPhotoFile(null); setPhotoPreview(""); }}
+                            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white shadow flex items-center justify-center text-gray-500 hover:text-red-500"
+                          >✕</button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-200 rounded-xl cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-all">
+                          <span className="text-3xl mb-1">📷</span>
+                          <span className="text-sm text-gray-500">Нажмите чтобы выбрать фото</span>
+                          <span className="text-xs text-gray-400 mt-1">JPG, PNG до 10 МБ</span>
+                          <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                        </label>
+                      )}
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Пожелания и персонализация</label>
                     <textarea
@@ -906,9 +981,10 @@ export default function Index() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-4 rounded-xl font-bold text-white text-lg bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200"
+                    disabled={photoUploading}
+                    className="w-full py-4 rounded-xl font-bold text-white text-lg bg-gradient-to-r from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 transition-all shadow-lg shadow-pink-200 disabled:opacity-60"
                   >
-                    Отправить заявку
+                    {photoUploading ? '📤 Загружаем фото...' : 'Отправить заявку'}
                   </button>
                   <p className="text-center text-xs text-gray-400">Минимальный срок заказа торта — 3 дня</p>
                 </form>
