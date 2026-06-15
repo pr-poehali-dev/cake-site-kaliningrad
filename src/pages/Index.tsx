@@ -20,12 +20,15 @@ const catalog = [
 ];
 
 const CDN = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket";
-const portfolio = [
-  { id: 1, img: `${CDN}/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg`, title: "Свадебный торт 6 ярусов", desc: "Мастика, живые цветы, ручная лепка" },
-  { id: 2, img: `${CDN}/3ad6f483-671f-4031-bac3-5d4339ac9a35.jpg`, title: "Авторские торты", desc: "Ручная работа из натуральных ингредиентов" },
-  { id: 3, img: `${CDN}/f1283524-b4f5-47bf-9adc-7260bab4c2a4.jpg`, title: "Домашний зефир", desc: "Нежный зефир ручной работы" },
-  { id: 4, img: `${CDN}/08e21a28-173c-4775-bccf-9f393db37c16.jpg`, title: "Торты на заказ", desc: "Любой дизайн и тематика" },
-  { id: 5, img: `${CDN}/caef53f9-cc63-4ec9-8ef5-30b791b0cce5.jpg`, title: "Праздничные торты", desc: "Для особых моментов" },
+const STORAGE_URL = "https://functions.poehali.dev/51b01867-45fb-4694-85ce-7447dd93fa9e";
+
+// Статичные фото — показываются всегда (пока не загружены фото в хранилище)
+const staticPortfolio = [
+  { id: 1, img: `${CDN}/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg`, title: "Свадебный торт 6 ярусов" },
+  { id: 2, img: `${CDN}/3ad6f483-671f-4031-bac3-5d4339ac9a35.jpg`, title: "Авторские торты" },
+  { id: 3, img: `${CDN}/f1283524-b4f5-47bf-9adc-7260bab4c2a4.jpg`, title: "Домашний зефир" },
+  { id: 4, img: `${CDN}/08e21a28-173c-4775-bccf-9f393db37c16.jpg`, title: "Торты на заказ" },
+  { id: 5, img: `${CDN}/caef53f9-cc63-4ec9-8ef5-30b791b0cce5.jpg`, title: "Праздничные торты" },
 ];
 
 const services = [
@@ -68,6 +71,19 @@ export default function Index() {
   const [orderOpen, setOrderOpen] = useState(false);
   const [orderVisible, setOrderVisible] = useState(false);
   const [lightbox, setLightbox] = useState<{ img: string; title: string } | null>(null);
+  const [portfolioPhotos, setPortfolioPhotos] = useState<{ id: number; img: string; title: string }[]>(staticPortfolio);
+
+  useEffect(() => {
+    fetch(STORAGE_URL)
+      .then(r => r.json())
+      .then((files: { key: string; url: string }[]) => {
+        const fromStorage = files
+          .filter(f => f.key.startsWith("portfolio/"))
+          .map((f, i) => ({ id: 100 + i, img: f.url, title: "Работа" }));
+        if (fromStorage.length > 0) setPortfolioPhotos([...staticPortfolio, ...fromStorage]);
+      })
+      .catch(() => {});
+  }, []);
 
   const openOrder = (item?: string) => {
     if (item) setForm(f => {
@@ -422,7 +438,7 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {portfolio.map((item) => (
+            {portfolioPhotos.map((item) => (
               <div
                 key={item.id}
                 className="group relative overflow-hidden rounded-2xl cursor-pointer"
