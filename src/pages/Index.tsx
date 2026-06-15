@@ -77,8 +77,41 @@ export default function Index() {
   };
   const closeOrder = () => { setOrderVisible(false); setTimeout(() => setOrderOpen(false), 300); };
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "", print: "" });
+  const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "", print: "", kg: "1", qty: "6" });
   const [submitted, setSubmitted] = useState(false);
+
+  const PRICES: Record<string, { base: number; unit: string }> = {
+    "Торт на заказ":    { base: 2500, unit: "kg" },
+    "Капкейки":         { base: 300,  unit: "qty" },
+    "Зефир":            { base: 2000, unit: "fixed" },
+    "Медовик":          { base: 2500, unit: "kg" },
+    "Трюфели":          { base: 150,  unit: "qty" },
+    "Торт-цифра":       { base: 2500, unit: "kg" },
+    "Праздничный набор":{ base: 3500, unit: "fixed" },
+    "Свадебный торт":   { base: 2500, unit: "kg" },
+    "Меренговый рулет": { base: 1800, unit: "kg" },
+  };
+
+  const calcTotal = () => {
+    const selected = form.type ? form.type.split(', ').map(s => s.trim()).filter(Boolean) : [];
+    if (!selected.length) return null;
+    let total = 0;
+    for (const name of selected) {
+      const p = PRICES[name];
+      if (!p) continue;
+      if (p.unit === "kg")    total += p.base * parseFloat(form.kg || "1");
+      else if (p.unit === "qty") total += p.base * parseInt(form.qty || "1");
+      else total += p.base;
+    }
+    if (form.print === "С фотопечатью") total += 500;
+    const discount = form.promo.trim() === VALID_PROMO ? 0.85 : 1;
+    return Math.round(total * discount);
+  };
+
+  const totalPrice = calcTotal();
+  const selectedItems = form.type ? form.type.split(', ').map(s => s.trim()).filter(Boolean) : [];
+  const hasKgItem = selectedItems.some(n => PRICES[n]?.unit === "kg");
+  const hasQtyItem = selectedItems.some(n => PRICES[n]?.unit === "qty");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>("");
   const [photoUploading, setPhotoUploading] = useState(false);
@@ -953,12 +986,46 @@ export default function Index() {
                     </div>
                   )}
 
+                  {/* QUANTITY FIELDS */}
+                  {(hasKgItem || hasQtyItem) && (
+                    <div className="flex gap-3">
+                      {hasKgItem && (
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Вес торта (кг)</label>
+                          <input
+                            type="number"
+                            min="0.5"
+                            max="20"
+                            step="0.5"
+                            value={form.kg}
+                            onChange={e => setForm({ ...form, kg: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800"
+                          />
+                        </div>
+                      )}
+                      {hasQtyItem && (
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Количество (шт)</label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="200"
+                            step="1"
+                            value={form.qty}
+                            onChange={e => setForm({ ...form, qty: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Пожелания и персонализация</label>
                     <textarea
                       value={form.comment}
                       onChange={e => setForm({ ...form, comment: e.target.value })}
-                      placeholder="Тематика, цвет, надпись, количество порций, аллергии..."
+                      placeholder="Тематика, цвет, надпись, аллергии..."
                       rows={3}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 resize-none"
                     />
@@ -979,6 +1046,34 @@ export default function Index() {
                       <p className="mt-1.5 text-red-400 text-sm flex items-center gap-1">❌ Промокод не найден</p>
                     )}
                   </div>
+
+                  {/* PRICE ESTIMATE */}
+                  {totalPrice !== null && (
+                    <div className="rounded-2xl bg-gradient-to-r from-pink-50 to-orange-50 border border-pink-200 p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-600">Предварительная стоимость</span>
+                        <span className="text-xs text-gray-400">уточняется при подтверждении</span>
+                      </div>
+                      <div className="space-y-1 text-sm text-gray-500 mb-3">
+                        {selectedItems.map(name => {
+                          const p = PRICES[name];
+                          if (!p) return null;
+                          let line = "";
+                          if (p.unit === "kg") line = `${name} × ${form.kg} кг = ${Math.round(p.base * parseFloat(form.kg || "1")).toLocaleString('ru')} ₽`;
+                          else if (p.unit === "qty") line = `${name} × ${form.qty} шт = ${Math.round(p.base * parseInt(form.qty || "1")).toLocaleString('ru')} ₽`;
+                          else line = `${name} = ${p.base.toLocaleString('ru')} ₽`;
+                          return <div key={name}>• {line}</div>;
+                        })}
+                        {form.print === "С фотопечатью" && <div>• Фотопечать = 500 ₽</div>}
+                        {promoValid && <div className="text-green-600">• Скидка по промокоду −15%</div>}
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-pink-200">
+                        <span className="font-bold text-gray-800">Итого от</span>
+                        <span className="text-2xl font-black text-pink-600">{totalPrice.toLocaleString('ru')} ₽</span>
+                      </div>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     disabled={photoUploading}
