@@ -203,7 +203,7 @@ export default function Index() {
       await fetch(ORDERS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, photoUrl }),
+        body: JSON.stringify({ ...form, photoUrl, estimatedPrice: totalPrice ? `${totalPrice.toLocaleString('ru')} ₽` : "" }),
       });
     } catch (e) {
       console.error(e);
