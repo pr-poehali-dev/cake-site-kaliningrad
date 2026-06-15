@@ -19,8 +19,13 @@ const catalog = [
   { id: 10, name: "Меренговый рулет", price: "1 800 ₽/кг", emoji: "🍥", tag: "Нежно", desc: "Воздушная меренга с нежным кремом — лёгкий и изысканный десерт" },
 ];
 
+const CDN = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket";
 const portfolio = [
-  { id: 1, img: "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg", title: "Свадебный торт 6 ярусов", desc: "Мастика, живые цветы, ручная лепка" },
+  { id: 1, img: `${CDN}/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg`, title: "Свадебный торт 6 ярусов", desc: "Мастика, живые цветы, ручная лепка" },
+  { id: 2, img: `${CDN}/3ad6f483-671f-4031-bac3-5d4339ac9a35.jpg`, title: "Авторские торты", desc: "Ручная работа из натуральных ингредиентов" },
+  { id: 3, img: `${CDN}/f1283524-b4f5-47bf-9adc-7260bab4c2a4.jpg`, title: "Домашний зефир", desc: "Нежный зефир ручной работы" },
+  { id: 4, img: `${CDN}/08e21a28-173c-4775-bccf-9f393db37c16.jpg`, title: "Торты на заказ", desc: "Любой дизайн и тематика" },
+  { id: 5, img: `${CDN}/caef53f9-cc63-4ec9-8ef5-30b791b0cce5.jpg`, title: "Праздничные торты", desc: "Для особых моментов" },
 ];
 
 const services = [
@@ -62,6 +67,7 @@ export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
   const [orderVisible, setOrderVisible] = useState(false);
+  const [lightbox, setLightbox] = useState<{ img: string; title: string } | null>(null);
 
   const openOrder = (item?: string) => {
     if (item) setForm(f => {
@@ -417,19 +423,46 @@ export default function Index() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {portfolio.map((item) => (
-              <div key={item.id} className="group relative overflow-hidden rounded-2xl cursor-pointer">
+              <div
+                key={item.id}
+                className="group relative overflow-hidden rounded-2xl cursor-pointer"
+                onClick={() => setLightbox({ img: item.img, title: item.title })}
+              >
                 <img
                   src={item.img}
                   alt={item.title}
                   className="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                   <h3 className="text-white font-bold text-sm">{item.title}</h3>
                   <p className="text-white/70 text-xs mt-1">{item.desc}</p>
+                  <div className="mt-2 w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                    <Icon name="ZoomIn" size={14} className="text-white" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Lightbox */}
+          {lightbox && (
+            <div
+              className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+              onClick={() => setLightbox(null)}
+            >
+              <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+                <Icon name="X" size={20} />
+              </button>
+              <img
+                src={lightbox.img}
+                alt={lightbox.title}
+                className="max-w-full max-h-[90vh] rounded-2xl object-contain shadow-2xl"
+                onClick={e => e.stopPropagation()}
+              />
+              <p className="absolute bottom-6 text-white/70 text-sm">{lightbox.title}</p>
+            </div>
+          )}
+
           <div className="text-center mt-10">
             <a
               href="https://vk.com/id157357002"

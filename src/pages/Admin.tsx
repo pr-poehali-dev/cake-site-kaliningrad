@@ -3,6 +3,8 @@ import Icon from "@/components/ui/icon";
 
 const ORDERS_URL = "https://functions.poehali.dev/657ce97d-c9a3-494e-ac00-38311c63a47e";
 const CHAT_URL = "https://functions.poehali.dev/e1f3097d-d860-4b1b-bd2f-a01138bbba4e";
+const UPLOAD_URL = "https://functions.poehali.dev/13231e85-281a-4c17-8331-d6549790a887";
+const STORAGE_URL = "https://functions.poehali.dev/51b01867-45fb-4694-85ce-7447dd93fa9e";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   new:        { label: "Новая",      color: "bg-blue-100 text-blue-700" },
@@ -30,6 +32,9 @@ export default function Admin() {
   const [sending, setSending] = useState(false);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [tab, setTab] = useState<"orders" | "portfolio">("orders");
+  const [portfolioFiles, setPortfolioFiles] = useState<{key: string; url: string}[]>([]);
+  const [portfolioUploading, setPortfolioUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -47,6 +52,33 @@ export default function Admin() {
   const loadOrders = async () => {
     const res = await fetch(ORDERS_URL, { headers: { "X-Admin-Token": token } });
     if (res.ok) setOrders(await res.json());
+  };
+
+  const loadPortfolio = async () => {
+    const res = await fetch(STORAGE_URL);
+    if (res.ok) {
+      const all = await res.json();
+      setPortfolioFiles(all.filter((f: {key: string}) => f.key.startsWith("portfolio/")));
+    }
+  };
+
+  const uploadPortfolioPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPortfolioUploading(true);
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const base64 = ev.target?.result as string;
+      const res = await fetch(UPLOAD_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file: base64, name: `portfolio/${file.name}` }),
+      });
+      if (res.ok) await loadPortfolio();
+      setPortfolioUploading(false);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   };
 
   const loadMessages = async (orderId: string) => {
@@ -77,7 +109,7 @@ export default function Admin() {
     if (selected?.id === orderId) setSelected(prev => prev ? { ...prev, status } : null);
   };
 
-  useEffect(() => { if (token) loadOrders(); }, [token]);
+  useEffect(() => { if (token) { loadOrders(); loadPortfolio(); } }, [token]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -144,7 +176,50 @@ export default function Admin() {
         </button>
       </div>
 
-      <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100vh - 65px)" }}>
+      {/* Tabs */}
+      <div className="bg-white border-b border-gray-100 px-6 flex gap-1">
+        <button onClick={() => setTab("orders")} className={`px-5 py-3 text-sm font-semibold border-b-2 transition-colors ${tab === "orders" ? "border-pink-500 text-pink-600" : "border-transparent text-gray-400 hover:text-gray-600"}`}>
+          📋 Заявки
+        </button>
+        <button onClick={() => setTab("portfolio")} className={`px-5 py-3 text-sm font-semibold border-b-2 transition-colors ${tab === "portfolio" ? "border-pink-500 text-pink-600" : "border-transparent text-gray-400 hover:text-gray-600"}`}>
+          📸 Портфолио
+        </button>
+      </div>
+
+      {/* Portfolio tab */}
+      {tab === "portfolio" && (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="font-black text-gray-800 text-xl">Фото портфолио</h2>
+                <p className="text-gray-400 text-sm mt-1">Загруженные фото автоматически появятся в галерее на сайте</p>
+              </div>
+              <label className={`flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-orange-400 text-white font-semibold text-sm cursor-pointer hover:from-pink-600 hover:to-orange-500 transition-all ${portfolioUploading ? "opacity-60 pointer-events-none" : ""}`}>
+                <Icon name="Upload" size={16} />
+                {portfolioUploading ? "Загружаем..." : "Добавить фото"}
+                <input type="file" accept="image/*" className="hidden" onChange={uploadPortfolioPhoto} disabled={portfolioUploading} />
+              </label>
+            </div>
+            {portfolioFiles.length === 0 ? (
+              <div className="text-center py-20 text-gray-300">
+                <Icon name="Image" size={48} className="mx-auto mb-3" />
+                <p>Нет загруженных фото. Нажми «Добавить фото»!</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {portfolioFiles.map(f => (
+                  <div key={f.key} className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-square">
+                    <img src={f.url} alt={f.key} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className={`flex flex-1 overflow-hidden ${tab !== "orders" ? "hidden" : ""}`} style={{ height: "calc(100vh - 113px)" }}>
         {/* LEFT: orders list */}
         <div className="w-full md:w-80 lg:w-96 border-r border-gray-100 bg-white flex flex-col flex-shrink-0">
           <div className="p-4 space-y-2 border-b border-gray-100">
@@ -286,4 +361,5 @@ export default function Admin() {
       </div>
     </div>
   );
+
 }

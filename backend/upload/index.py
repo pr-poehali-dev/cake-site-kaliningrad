@@ -27,7 +27,12 @@ def handler(event: dict, context) -> dict:
 
     binary = base64.b64decode(file_data)
     ext = file_name.rsplit('.', 1)[-1].lower() if '.' in file_name else 'jpg'
-    key = f"order-photos/{uuid.uuid4()}.{ext}"
+    # Если имя содержит путь (например portfolio/photo.jpg) — используем его с uuid
+    if '/' in file_name:
+        folder = file_name.rsplit('/', 1)[0]
+        key = f"{folder}/{uuid.uuid4()}.{ext}"
+    else:
+        key = f"order-photos/{uuid.uuid4()}.{ext}"
 
     content_type_map = {'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp'}
     content_type = content_type_map.get(ext, 'image/jpeg')
