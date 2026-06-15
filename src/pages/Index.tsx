@@ -394,9 +394,17 @@ export default function Index() {
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
               Кондитер из Калининграда с более чем 5-летним опытом создания авторских тортов и десертов. Каждое изделие — это маленькое произведение искусства, сделанное с любовью и вниманием к деталям.
             </p>
-            <p className="text-gray-600 text-lg leading-relaxed mb-8">
+            <p className="text-gray-600 text-lg leading-relaxed mb-6">
               Я использую только натуральные ингредиенты, без консервантов. Для меня важно, чтобы каждый клиент получил именно то, о чём мечтал — будь то свадебный торт или скромный подарок любимому человеку.
             </p>
+            <div className="bg-white rounded-2xl border border-pink-100 shadow-sm p-6 mb-8 space-y-4">
+              <p className="text-gray-700 text-base leading-relaxed">
+                🇮🇹 <span className="font-semibold">Моей гордостью</span> было изготовление торта в Италии, на вилле Санта Барбара. Его высота была <span className="font-bold text-pink-500">1.72 м!</span>
+              </p>
+              <p className="text-gray-700 text-base leading-relaxed">
+                🌸 А сейчас я делаю особенно много <span className="font-semibold">зефирных букетов</span> — особенно к праздникам. Это моя фишка и настоящая любовь! Вариантов огромное множество, а изготовление — быстрое.
+              </p>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               {[
                 { label: "Натуральные ингредиенты", icon: "Leaf" },
