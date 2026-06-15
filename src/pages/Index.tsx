@@ -22,6 +22,8 @@ const catalog = [
 const CDN = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket";
 const STORAGE_URL = "https://functions.poehali.dev/51b01867-45fb-4694-85ce-7447dd93fa9e";
 
+const FILES_CDN = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/files";
+
 // Статичные фото — показываются всегда (пока не загружены фото в хранилище)
 const staticPortfolio = [
   { id: 1, img: `${CDN}/212a2d6d-1ed3-4ca6-bafa-3d4607f66e1d.jpg`, title: "Свадебный торт 6 ярусов" },
@@ -29,6 +31,11 @@ const staticPortfolio = [
   { id: 3, img: `${CDN}/f1283524-b4f5-47bf-9adc-7260bab4c2a4.jpg`, title: "Домашний зефир" },
   { id: 4, img: `${CDN}/08e21a28-173c-4775-bccf-9f393db37c16.jpg`, title: "Торты на заказ" },
   { id: 5, img: `${CDN}/caef53f9-cc63-4ec9-8ef5-30b791b0cce5.jpg`, title: "Праздничные торты" },
+  { id: 6, img: `${FILES_CDN}/4f50359e-a932-4405-9311-2cffa508bec1.jpg`, title: "Торт с розами" },
+  { id: 7, img: `${FILES_CDN}/b9f2410e-7333-4fbc-b9b5-10dc3227d5d6.jpg`, title: "Капкейки" },
+  { id: 8, img: `${FILES_CDN}/21b835c2-04c4-4e4d-9252-a020fa3e3cf8.jpg`, title: "Свадебный торт" },
+  { id: 9, img: `${FILES_CDN}/8d7055f6-d047-435b-9996-e573ddd1db7a.jpg`, title: "Трюфели" },
+  { id: 10, img: `${FILES_CDN}/ba43548f-fd00-462b-8f02-dbaa7fa89e04.jpg`, title: "Зефир" },
 ];
 
 const services = [
