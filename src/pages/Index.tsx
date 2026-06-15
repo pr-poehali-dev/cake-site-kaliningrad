@@ -20,7 +20,7 @@ const catalog = [
 ];
 
 const CDN = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket";
-const STORAGE_URL = "https://functions.poehali.dev/51b01867-45fb-4694-85ce-7447dd93fa9e";
+const PORTFOLIO_API = "https://functions.poehali.dev/5214afe5-4cdb-491c-9cad-27007e155333";
 
 const FILES_CDN = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/files";
 
@@ -81,13 +81,13 @@ export default function Index() {
   const [portfolioPhotos, setPortfolioPhotos] = useState<{ id: number; img: string; title: string }[]>(staticPortfolio);
 
   useEffect(() => {
-    fetch(STORAGE_URL)
+    fetch(PORTFOLIO_API)
       .then(r => r.json())
-      .then((files: { key: string; url: string }[]) => {
-        const fromStorage = files
-          .filter(f => f.key.startsWith("portfolio/"))
-          .map((f, i) => ({ id: 100 + i, img: f.url, title: "Работа" }));
-        if (fromStorage.length > 0) setPortfolioPhotos([...staticPortfolio, ...fromStorage]);
+      .then((items: { id: number; url: string; title: string }[]) => {
+        if (items.length > 0) {
+          const fromDb = items.map(f => ({ id: 1000 + f.id, img: f.url, title: f.title }));
+          setPortfolioPhotos([...staticPortfolio, ...fromDb]);
+        }
       })
       .catch(() => {});
   }, []);

@@ -1,0 +1,5 @@
+{
+  "tests": [
+    {"name": "GET portfolio", "method": "GET", "path": "/", "expectedStatus": 200, "bodyMatcher": "partial"}
+  ]
+}

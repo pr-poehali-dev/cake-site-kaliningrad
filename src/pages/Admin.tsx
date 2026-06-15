@@ -3,8 +3,7 @@ import Icon from "@/components/ui/icon";
 
 const ORDERS_URL = "https://functions.poehali.dev/657ce97d-c9a3-494e-ac00-38311c63a47e";
 const CHAT_URL = "https://functions.poehali.dev/e1f3097d-d860-4b1b-bd2f-a01138bbba4e";
-const UPLOAD_URL = "https://functions.poehali.dev/13231e85-281a-4c17-8331-d6549790a887";
-const STORAGE_URL = "https://functions.poehali.dev/51b01867-45fb-4694-85ce-7447dd93fa9e";
+const PORTFOLIO_URL = "https://functions.poehali.dev/5214afe5-4cdb-491c-9cad-27007e155333";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   new:        { label: "Новая",      color: "bg-blue-100 text-blue-700" },
@@ -55,11 +54,8 @@ export default function Admin() {
   };
 
   const loadPortfolio = async () => {
-    const res = await fetch(STORAGE_URL);
-    if (res.ok) {
-      const all = await res.json();
-      setPortfolioFiles(all.filter((f: {key: string}) => f.key.startsWith("portfolio/")));
-    }
+    const res = await fetch(PORTFOLIO_URL);
+    if (res.ok) setPortfolioFiles(await res.json());
   };
 
   const uploadPortfolioPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,12 +65,12 @@ export default function Admin() {
     const reader = new FileReader();
     reader.onload = async (ev) => {
       const base64 = ev.target?.result as string;
-      const res = await fetch(UPLOAD_URL, {
+      await fetch(PORTFOLIO_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ file: base64, name: `portfolio/${file.name}` }),
+        headers: { "Content-Type": "application/json", "X-Admin-Token": token },
+        body: JSON.stringify({ file: base64, name: file.name, title: "Работа" }),
       });
-      if (res.ok) await loadPortfolio();
+      await loadPortfolio();
       setPortfolioUploading(false);
     };
     reader.readAsDataURL(file);
