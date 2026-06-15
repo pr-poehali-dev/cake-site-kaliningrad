@@ -318,36 +318,7 @@ export default function Index() {
                 className="absolute inset-0 w-full h-full"
               />
             </div>
-            <div className="relative w-[280px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white" style={{aspectRatio: '9/16'}}>
-              <iframe
-                src="https://vk.com/video_ext.php?oid=503382298&id=456239996&hd=2"
-                width="100%"
-                height="100%"
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
-            <div className="relative w-[280px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white" style={{aspectRatio: '9/16'}}>
-              <iframe
-                src="https://vk.com/video_ext.php?oid=503382298&id=456239995&hd=2"
-                width="100%"
-                height="100%"
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
-            <div className="relative w-[280px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white" style={{aspectRatio: '9/16'}}>
-              <iframe
-                src="https://vk.com/video_ext.php?oid=503382298&id=456239997&hd=2"
-                width="100%"
-                height="100%"
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
+
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
