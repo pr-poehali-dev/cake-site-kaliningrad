@@ -45,5 +45,5 @@ def handler(event: dict, context) -> dict:
     )
     s3.put_object(Bucket='files', Key=key, Body=binary, ContentType=content_type)
 
-    url = f"https://cdn.poehali.dev/projects/{os.environ['AWS_ACCESS_KEY_ID']}/bucket/{key}"
+    url = f"https://cdn.poehali.dev/projects/{os.environ['AWS_ACCESS_KEY_ID']}/files/{key}"
     return {'statusCode': 200, 'headers': headers, 'body': json.dumps({'url': url})}

@@ -18,7 +18,7 @@ def handler(event: dict, context) -> dict:
     files = []
     for obj in result.get('Contents', []):
         key = obj['Key']
-        url = f"https://cdn.poehali.dev/projects/{key_id}/bucket/{key}"
+        url = f"https://cdn.poehali.dev/projects/{key_id}/files/{key}"
         files.append({'key': key, 'url': url, 'size': obj['Size']})
 
     return {'statusCode': 200, 'headers': headers, 'body': json.dumps(files, ensure_ascii=False)}
