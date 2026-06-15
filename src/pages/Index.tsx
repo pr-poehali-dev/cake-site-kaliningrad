@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
+import ChatWidget from "@/components/ChatWidget";
 
 const CHEF_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/3ad6f483-671f-4031-bac3-5d4339ac9a35.jpg";
 const ZEFIR_IMG = "https://cdn.poehali.dev/projects/1d79fd3e-3cad-4f78-b7a6-26bb28e80a0c/bucket/f1283524-b4f5-47bf-9adc-7260bab4c2a4.jpg";
@@ -1089,6 +1090,8 @@ export default function Index() {
           </div>
         </div>
       )}
+
+      <ChatWidget />
     </div>
   );
 }

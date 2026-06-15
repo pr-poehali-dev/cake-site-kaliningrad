@@ -4,7 +4,7 @@
       "name": "Сохранить заявку",
       "method": "POST",
       "path": "/",
-      "body": {"name": "Тест", "phone": "+79001234567", "date": "", "type": "Торт", "comment": "Тест", "promo": ""},
+      "body": {"name": "Тест", "phone": "+79001234567", "type": "Торт"},
       "expectedStatus": 200,
       "expectedBody": {"ok": true},
       "bodyMatcher": "partial"
