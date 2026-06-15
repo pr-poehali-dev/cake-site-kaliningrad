@@ -43,7 +43,20 @@ def handler(event: dict, context) -> dict:
         aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
         aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
     )
-    s3.put_object(Bucket='files', Key=key, Body=binary, ContentType=content_type, ACL='public-read')
+    try:
+        s3.put_object(Bucket='files', Key=key, Body=binary, ContentType=content_type)
+        print(f"SUCCESS: uploaded to files/{key}")
+    except Exception as e:
+        print(f"ERROR files bucket: {e}")
+        # Пробуем без папки, как generate_image
+        try:
+            flat_key = f"{uuid.uuid4()}.{ext}"
+            s3.put_object(Bucket='files', Key=flat_key, Body=binary, ContentType=content_type)
+            key = flat_key
+            print(f"SUCCESS: uploaded flat key {flat_key}")
+        except Exception as e2:
+            print(f"ERROR flat: {e2}")
+            return {'statusCode': 500, 'headers': headers, 'body': json.dumps({'error': str(e2)})}
 
     url = f"https://cdn.poehali.dev/projects/{os.environ['AWS_ACCESS_KEY_ID']}/files/{key}"
     return {'statusCode': 200, 'headers': headers, 'body': json.dumps({'url': url})}
