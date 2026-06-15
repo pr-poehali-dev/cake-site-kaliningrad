@@ -63,7 +63,15 @@ export default function Index() {
   const [orderVisible, setOrderVisible] = useState(false);
 
   const openOrder = (item?: string) => {
-    if (item) setForm(f => ({ ...f, type: f.type ? (f.type.includes(item) ? f.type : f.type + ', ' + item) : item }));
+    if (item) setForm(f => {
+      const items = f.type ? f.type.split(', ').map(s => s.trim()).filter(Boolean) : [];
+      const next = items.includes(item) ? items : [...items, item];
+      if (item === 'Праздничный набор') {
+        if (!next.includes('Капкейки')) next.push('Капкейки');
+        if (!next.includes('Торт на заказ')) next.push('Торт на заказ');
+      }
+      return { ...f, type: next.join(', ') };
+    });
     setOrderOpen(true);
     setTimeout(() => setOrderVisible(true), 10);
   };
@@ -847,9 +855,16 @@ export default function Index() {
                             onClick={() => {
                               const items = form.type ? form.type.split(', ').map(s => s.trim()).filter(Boolean) : [];
                               if (selected) {
-                                setForm({ ...form, type: items.filter(i => i !== opt).join(', ') });
+                                let next = items.filter(i => i !== opt);
+                                if (opt === 'Праздничный набор') next = next.filter(i => i !== 'Капкейки' && i !== 'Торт на заказ');
+                                setForm({ ...form, type: next.join(', ') });
                               } else {
-                                setForm({ ...form, type: [...items, opt].join(', ') });
+                                const next = [...items, opt];
+                                if (opt === 'Праздничный набор') {
+                                  if (!next.includes('Капкейки')) next.push('Капкейки');
+                                  if (!next.includes('Торт на заказ')) next.push('Торт на заказ');
+                                }
+                                setForm({ ...form, type: next.join(', ') });
                               }
                             }}
                             className={`px-3 py-1.5 rounded-full text-xs font-semibold border-2 transition-all ${selected ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300'}`}
