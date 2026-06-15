@@ -62,7 +62,11 @@ export default function Index() {
   const [orderOpen, setOrderOpen] = useState(false);
   const [orderVisible, setOrderVisible] = useState(false);
 
-  const openOrder = () => { setOrderOpen(true); setTimeout(() => setOrderVisible(true), 10); };
+  const openOrder = (item?: string) => {
+    if (item) setForm(f => ({ ...f, type: f.type ? (f.type.includes(item) ? f.type : f.type + ', ' + item) : item }));
+    setOrderOpen(true);
+    setTimeout(() => setOrderVisible(true), 10);
+  };
   const closeOrder = () => { setOrderVisible(false); setTimeout(() => setOrderOpen(false), 300); };
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", date: "", type: "", comment: "", promo: "" });
@@ -278,7 +282,7 @@ export default function Index() {
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-pink-600 text-lg">{item.price}</span>
                   <button
-                    onClick={() => openOrder()}
+                    onClick={() => openOrder(item.name)}
                     className="flex items-center gap-1 px-4 py-2 rounded-full bg-white border-2 border-pink-200 text-pink-600 text-sm font-semibold hover:bg-pink-500 hover:text-white hover:border-pink-500 transition-all"
                   >
                     Заказать
@@ -791,7 +795,7 @@ export default function Index() {
                   <div className="text-5xl mb-4">🎉</div>
                   <h4 className="font-bold text-xl text-gray-800 mb-2">Заявка принята!</h4>
                   <p className="text-gray-500 mb-6">Елена свяжется с вами в ближайшее время</p>
-                  <button onClick={() => { closeOrder(); setSubmitted(false); }} className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400">
+                  <button onClick={() => { closeOrder(); setSubmitted(false); setForm(f => ({...f, type: ''})); }} className="px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400">
                     Закрыть
                   </button>
                 </div>
@@ -832,24 +836,32 @@ export default function Index() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Тип изделия</label>
-                    <select
-                      value={form.type}
-                      onChange={e => setForm({ ...form, type: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 text-gray-800 bg-white"
-                    >
-                      <option value="">Выберите...</option>
-                      <option>Торт на заказ</option>
-                      <option>Капкейки</option>
-                      <option>Зефир</option>
-                      <option>Медовик</option>
-                      <option>Трюфели</option>
-                      <option>Торт-цифра</option>
-                      <option>Праздничный набор</option>
-                      <option>Свадебный торт</option>
-                      <option>Меринговый рулет</option>
-                      <option>Другое</option>
-                    </select>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Состав заказа</label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {["Торт на заказ","Капкейки","Зефир","Медовик","Трюфели","Торт-цифра","Праздничный набор","Свадебный торт","Меренговый рулет"].map(opt => {
+                        const selected = form.type.split(', ').map(s => s.trim()).includes(opt);
+                        return (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              const items = form.type ? form.type.split(', ').map(s => s.trim()).filter(Boolean) : [];
+                              if (selected) {
+                                setForm({ ...form, type: items.filter(i => i !== opt).join(', ') });
+                              } else {
+                                setForm({ ...form, type: [...items, opt].join(', ') });
+                              }
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border-2 transition-all ${selected ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-600 border-gray-200 hover:border-pink-300'}`}
+                          >
+                            {selected && '✓ '}{opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {form.type && (
+                      <p className="text-xs text-pink-500 font-medium">Выбрано: {form.type}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Пожелания и персонализация</label>
