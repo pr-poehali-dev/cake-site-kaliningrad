@@ -611,40 +611,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-24 bg-gradient-to-br from-pink-50 to-rose-50">
-        <div className="max-w-3xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-semibold mb-4">
-              💬 FAQ
-            </div>
-            <h2 className="font-display text-4xl lg:text-5xl font-black">Частые вопросы</h2>
-          </div>
-          <div className="space-y-3">
-            {faqs.map((item, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-pink-100 overflow-hidden shadow-sm">
-                <button
-                  className="w-full flex items-center justify-between px-6 py-5 text-left"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                >
-                  <span className="font-bold text-gray-800 pr-4">{item.q}</span>
-                  <Icon
-                    name={openFaq === i ? "ChevronUp" : "ChevronDown"}
-                    size={20}
-                    className="flex-shrink-0 text-pink-400"
-                  />
-                </button>
-                {openFaq === i && (
-                  <div className="px-6 pb-5 text-gray-600 leading-relaxed border-t border-pink-50 pt-4">
-                    {item.a}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CONTACTS */}
       <section id="contacts" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
@@ -791,6 +757,40 @@ export default function Index() {
                 </form>
               )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-24 bg-gradient-to-br from-pink-50 to-rose-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-semibold mb-4">
+              💬 FAQ
+            </div>
+            <h2 className="font-display text-4xl lg:text-5xl font-black">Частые вопросы</h2>
+          </div>
+          <div className="space-y-3">
+            {faqs.map((item, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-pink-100 overflow-hidden shadow-sm">
+                <button
+                  className="w-full flex items-center justify-between px-6 py-5 text-left"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                >
+                  <span className="font-bold text-gray-800 pr-4">{item.q}</span>
+                  <Icon
+                    name={openFaq === i ? "ChevronUp" : "ChevronDown"}
+                    size={20}
+                    className="flex-shrink-0 text-pink-400"
+                  />
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 text-gray-600 leading-relaxed border-t border-pink-50 pt-4">
+                    {item.a}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
