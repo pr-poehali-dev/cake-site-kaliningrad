@@ -110,6 +110,10 @@ export default function Index() {
     setReviewLoading(false);
   };
 
+  const scrollTo = (id: string) => {
+    document.getElementById(id.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const VALID_PROMO = "ЗЕФИРНОЕ ЛЕТО";
   const promoValid = form.promo.trim() === VALID_PROMO;
   const promoEntered = form.promo.trim().length > 0;
@@ -142,9 +146,9 @@ export default function Index() {
           </a>
           <div className="hidden lg:flex items-center gap-6">
             {navItems.map((n) => (
-              <a key={n.href} href={n.href} className="text-sm font-medium text-gray-600 hover:text-pink-500 transition-colors">
+              <button key={n.href} onClick={() => scrollTo(n.href)} className="text-sm font-medium text-gray-600 hover:text-pink-500 transition-colors">
                 {n.label}
-              </a>
+              </button>
             ))}
           </div>
           <button
@@ -161,9 +165,9 @@ export default function Index() {
         {menuOpen && (
           <div className="lg:hidden bg-white border-t border-pink-100 px-4 py-4 flex flex-col gap-3">
             {navItems.map((n) => (
-              <a key={n.href} href={n.href} onClick={() => setMenuOpen(false)} className="text-base font-medium text-gray-700 py-1">
+              <button key={n.href} onClick={() => { scrollTo(n.href); setMenuOpen(false); }} className="text-base font-medium text-gray-700 py-1 text-left">
                 {n.label}
-              </a>
+              </button>
             ))}
             <button
               onClick={() => { setOrderOpen(true); setMenuOpen(false); }}
@@ -204,12 +208,12 @@ export default function Index() {
                 <Icon name="Sparkles" size={20} />
                 Сделать предзаказ
               </button>
-              <a
-                href="#catalog"
+              <button
+                onClick={() => document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' })}
                 className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-pink-600 text-lg bg-white border-2 border-pink-200 hover:border-pink-400 transition-all"
               >
                 Смотреть каталог
-              </a>
+              </button>
             </div>
             <div className="mt-10 flex items-center gap-8">
               <div className="text-center">
