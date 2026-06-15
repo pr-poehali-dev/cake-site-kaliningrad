@@ -52,7 +52,7 @@ def handler(event: dict, context) -> dict:
 
         binary = base64.b64decode(file_data)
         ext = body.get('name', 'photo.jpg').rsplit('.', 1)[-1].lower()
-        key = f"portfolio/{uuid.uuid4()}.{ext}"
+        key = f"{uuid.uuid4()}.{ext}"
 
         content_type_map = {'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp'}
         content_type = content_type_map.get(ext, 'image/jpeg')
